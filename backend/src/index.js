@@ -6,7 +6,7 @@ app.use(express.json());
 
 const prisma = new PrismaClient();
 
-app.get("/", async (req, res) => {
+app.get("/costumers", async (req, res) => {
   const costumers = await prisma.costumers.findMany();
   res.status(200).json(costumers);
 });
@@ -65,12 +65,10 @@ app.delete("/delete-costumer/:id", async (req, res) => {
       },
       true
     );
-    return res
-      .status(200)
-      .send({
-        costumer: deleteCostumers,
-        message: "Usuario removido com sucesso!",
-      });
+    return res.status(200).send({
+      costumer: deleteCostumers,
+      message: "Usuario removido com sucesso!",
+    });
   } catch (e) {
     return res.status(500).send(e);
   }
