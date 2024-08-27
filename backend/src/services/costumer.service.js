@@ -3,7 +3,9 @@ const prisma = require("../prisma/client");
 async function createCostumer(data) {
   return await prisma.costumers.create({
     data: {
-      data,
+      email: data.email,
+      company_name: data.company_name,
+      requested_service: data.requested_service,
     },
   });
 }
@@ -18,7 +20,9 @@ async function updateCostumer(id, data) {
       id: id,
     },
     data: {
-      data,
+      email: data.email,
+      company_name: data.company_name,
+      requested_service: data.requested_service,
     },
   });
 }
