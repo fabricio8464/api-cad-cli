@@ -1,5 +1,6 @@
 const prisma = require("../prisma/client");
 const auth = require("../middleware/auth.middleware");
+const bcrypt = require("bcrypt");
 
 async function authenticateUser(data) {
   try {
@@ -7,19 +8,36 @@ async function authenticateUser(data) {
       where: {
         email: data.email,
       },
+      select: {
+        email: true,
+        password: true,
+      },
     });
-    if (user) {
+    const passwordVerify = await verifyBcriptPassword(
+      data.password,
+      user.password
+    );
+    if (user && passwordVerify) {
       const token = auth.Authentication(user);
+      delete user.password;
       return { token, user };
     }
-    return user;
+    return {
+      message:
+        "usuario não encontrado, verifique se senha e o email se estão corretos!",
+    };
   } catch (err) {
     console.log(err);
   }
 }
 
-async function teste() {
-  return await prisma.user.findMany();
+async function verifyBcriptPassword(stringPassword, hashPassword) {
+  try {
+    const verifyPassword = await bcrypt.compare(stringPassword, hashPassword);
+    return verifyPassword;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-module.exports = { authenticateUser, teste };
+module.exports = { authenticateUser };

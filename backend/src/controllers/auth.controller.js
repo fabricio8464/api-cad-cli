@@ -1,23 +1,13 @@
 const authService = require("../services/auth.service");
 const authMiddlaware = require("../middleware/auth.middleware");
 
-async function authUser(req, res, next) {
+async function authUser(req, res) {
   try {
     const user = await authService.authenticateUser(req.body);
-    res.status(201).json(user);
+    res.status(200).json(user);
   } catch (err) {
-    console.log(err);
+    return res.status(500).json(err);
   }
 }
 
-async function testeUsers(req, res, next) {
-  try {
-    const token = authMiddlaware.verifyToken(req, res, next);
-    const user = await authService.teste();
-    res.status(201).json(user);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-module.exports = { authUser, testeUsers };
+module.exports = { authUser };
